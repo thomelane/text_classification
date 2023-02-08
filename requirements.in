@@ -1,0 +1,10 @@
+dagster
+dagit
+pandas
+matplotlib
+scikit-learn
+imbalanced-learn
+sentence-transformers
+torch
+pytorch_lightning
+torchmetrics

@@ -1,0 +1,20 @@
+{
+  "template": "https://github.com/thomelane/python-sample.git",
+  "commit": "6db34895ad14c8073d948606e874efbf1b237c6a",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "text_classification",
+      "project_description": "A Python package to do something",
+      "project_slug": "text_classification",
+      "package_name": "text_classification",
+      "python_version": "3.10",
+      "_template": "https://github.com/thomelane/python-sample.git"
+    }
+  },
+  "directory": null,
+  "skip": [
+    ".venv",
+    ".git"
+  ]
+}

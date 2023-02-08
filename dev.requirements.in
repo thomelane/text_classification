@@ -2,3 +2,7 @@
 pylint
 black
 pytest
+jupyter
+notebook
+jupytext
+tensorboard

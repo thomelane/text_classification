@@ -1,3 +1,8 @@
 .venv
 __pycache__
 *.egg-info
+dagster/*
+!dagster/dagster.yaml
+data/*
+!data/source
+.ipynb_checkpoints

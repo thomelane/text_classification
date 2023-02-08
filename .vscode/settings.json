@@ -5,8 +5,12 @@
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
     "python.linting.pylintPath": ".venv/bin/pylint",
+    "python.linting.pylintArgs": [
+        "--generated-members=numpy.*,torch.*"
+    ],
     "search.exclude": {
-        "**/.venv": true
+        "**/.venv": true,
+        "dagster": true
     },
     "python.testing.pytestEnabled": true,
     "python.testing.pytestArgs": [
