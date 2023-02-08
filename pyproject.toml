@@ -1,0 +1,17 @@
+[project]
+name = "text_classification"
+version = "0.1.0"
+description = "text_classification - A Python package to do something"
+readme = "README.md"
+requires-python = ">=3.10"
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.cruft]
+skip = [".venv", ".git"]
