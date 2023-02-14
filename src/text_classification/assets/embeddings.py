@@ -2,7 +2,7 @@ from dagster import asset, Output
 import numpy as np
 
 from text_classification.data import Samples
-from text_classification.models import SentenceTransformerLogisticRegression
+from text_classification.models import FrozenLmWithLR
 import text_classification.config as cfg
 
 
@@ -13,13 +13,13 @@ def embed(samples: Samples) -> Output[np.ndarray]:
     :param samples: samples to embed
     :return: embeddings matrix
     """
-    model = SentenceTransformerLogisticRegression(
+    model = FrozenLmWithLR(
         cfg.FEATURE_FIELDS,
-        cfg.SENTENCE_TRANSFORMER_MODEL
+        cfg.LANGUAGE_MODEL
     )
     embeddings = model.embed(samples)
     metadata = {
-        'model': cfg.SENTENCE_TRANSFORMER_MODEL,
+        'model': cfg.LANGUAGE_MODEL,
         'shape': str(embeddings.shape)
     }
     output = Output(embeddings, metadata=metadata)

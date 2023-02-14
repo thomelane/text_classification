@@ -8,7 +8,7 @@ import numpy as np
 
 from text_classification import defs
 from text_classification.data import Samples
-from text_classification.models import TfidfLogisticRegression
+from text_classification.models import TfidfWithLR
 from text_classification.metrics import report_from_base64
 from text_classification.transforms import extract_label, LabelTransform
 
@@ -63,7 +63,7 @@ print(valid_report)
 # ❓ What are some examples that the model gets wrong?
 
 # %%
-model: TfidfLogisticRegression = defs.load_asset_value("tfidf_logistic_regression_model")  # type: ignore
+model: TfidfWithLR = defs.load_asset_value("tfidf_logistic_regression_model")  # type: ignore
 validation_set: Samples = defs.load_asset_value("validation_set")  # type: ignore
 label_transform: LabelTransform = defs.load_asset_value("label_transform")  # type: ignore
 

@@ -4,10 +4,10 @@ import numpy as np
 import torch
 
 from text_classification.models.base import Model
-from text_classification.models.sentence_transformer_nn.train import train
+from text_classification.models.frozen_lm_with_nn.train import train
 
 
-class SentenceTransformerNN(Model):
+class FrozenLmWithNN(Model):
     """
     A model that uses sentence_transformers to embed the samples and then uses
     a neural network 'head' to predict the labels.

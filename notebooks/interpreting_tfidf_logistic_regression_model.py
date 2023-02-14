@@ -20,14 +20,14 @@ from sklearn.preprocessing import LabelEncoder
 
 from text_classification import defs
 from text_classification.data import Samples
-from text_classification.models import TfidfLogisticRegression
+from text_classification.models import TfidfWithLR
 
 
 # %% [markdown]
 # Get source assets.
 
 # %%
-model: TfidfLogisticRegression = defs.load_asset_value("tfidf_logistic_regression_model")  # type: ignore
+model: TfidfWithLR = defs.load_asset_value("tfidf_logistic_regression_model")  # type: ignore
 
 # %% [markdown]
 # ## Interpret `TfidfVectorizer`

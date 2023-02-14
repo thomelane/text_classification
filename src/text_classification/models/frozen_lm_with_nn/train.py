@@ -8,7 +8,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
 
-from text_classification.models.sentence_transformer_nn.lightning_module import ClassificationHead
+from .lightning_module import ClassificationHead
 
 
 def train(

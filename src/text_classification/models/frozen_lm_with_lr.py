@@ -10,7 +10,7 @@ from text_classification.models.base import Model
 from text_classification.transforms import concat_fields
 
 
-class SentenceTransformerLogisticRegression(Model):
+class FrozenLmWithLR(Model):
     """
     A model that uses sentence_transformers to embed the samples and then uses
     logistic regression 'head' to predict the labels.
@@ -36,12 +36,12 @@ class SentenceTransformerLogisticRegression(Model):
         X_embeddings = self._sentence_transformer.encode(X_text, show_progress_bar=True)
         return np.array(X_embeddings)
 
-    def fit(self, X: Samples, y: np.ndarray) -> 'SentenceTransformerLogisticRegression':
+    def fit(self, X: Samples, y: np.ndarray) -> 'FrozenLmWithLR':
         X_embeddings = self.embed(X)
         self._logistic_regression.fit(X_embeddings, y)
         return self
     
-    def fit_from_embeddings(self, X_embeddings: np.ndarray, y: np.ndarray) -> 'SentenceTransformerLogisticRegression':
+    def fit_from_embeddings(self, X_embeddings: np.ndarray, y: np.ndarray) -> 'FrozenLmWithLR':
         self._logistic_regression.fit(X_embeddings, y)
         return self
     

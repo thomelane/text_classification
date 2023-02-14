@@ -2,6 +2,7 @@ from text_classification.models.base import Model
 from text_classification.models.most_common_class import MostCommonClass
 from text_classification.models.label_distribution import LabelDistribution
 from text_classification.models.random_class import RandomClass
-from text_classification.models.tfidf_logistic_regression import TfidfLogisticRegression
-from text_classification.models.sentence_transformer_logistic_regression import SentenceTransformerLogisticRegression
-from text_classification.models.sentence_transformer_nn import SentenceTransformerNN
+from text_classification.models.tfidf_with_lr import TfidfWithLR
+from text_classification.models.frozen_lm_with_lr import FrozenLmWithLR
+from text_classification.models.frozen_lm_with_nn import FrozenLmWithNN
+from text_classification.models.finetuned_lm import FinetunedLM

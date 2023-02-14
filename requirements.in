@@ -8,3 +8,6 @@ sentence-transformers
 torch
 pytorch_lightning
 torchmetrics
+transformers
+datasets
+evaluate

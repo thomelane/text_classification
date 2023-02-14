@@ -9,9 +9,10 @@ from text_classification.models import (
     MostCommonClass,
     LabelDistribution,
     RandomClass,
-    TfidfLogisticRegression,
-    SentenceTransformerLogisticRegression,
-    SentenceTransformerNN
+    TfidfWithLR,
+    FrozenLmWithLR,
+    FrozenLmWithNN,
+    FinetunedLM,
 )
 from text_classification.transforms import LabelTransform, extract_label
 from text_classification.metrics import test_model
@@ -69,7 +70,7 @@ def train_and_test_model_from_embeddings(
 
 
 @asset
-def most_common_class_model(
+def most_common_class(
     train_set: Samples,
     validation_set: Samples,
     label_transform: LabelTransform
@@ -89,7 +90,7 @@ def most_common_class_model(
 
 
 @asset
-def label_distribution_model(
+def label_distribution(
     train_set: Samples,
     validation_set: Samples,
     label_transform: LabelTransform
@@ -109,7 +110,7 @@ def label_distribution_model(
 
 
 @asset
-def random_class_model(
+def random_class(
     train_set: Samples,
     validation_set: Samples,
     label_transform: LabelTransform
@@ -129,7 +130,7 @@ def random_class_model(
 
 
 @asset
-def tfidf_logistic_regression_model(
+def tfidf_with_lr(
     train_set: Samples,
     validation_set: Samples,
     label_transform: LabelTransform
@@ -142,7 +143,7 @@ def tfidf_logistic_regression_model(
     :param label_transform: label_transform asset
     :return: tfidf_logistic_regression_model asset
     """
-    model = TfidfLogisticRegression(cfg.FEATURE_FIELDS)
+    model = TfidfWithLR(cfg.FEATURE_FIELDS)
     model, metadata = train_and_test_model(model, train_set, validation_set, label_transform)
     metadata['num_features'] = len(model.tfidf_vectorizer.vocabulary_)  # type: ignore
     output = Output(model, metadata=metadata)
@@ -150,7 +151,7 @@ def tfidf_logistic_regression_model(
 
 
 @asset
-def sentence_transformer_logistic_regression(
+def frozen_lm_with_lr(
     train_embeddings: np.ndarray,
     validation_embeddings: np.ndarray,
     train_set: Samples,
@@ -167,7 +168,7 @@ def sentence_transformer_logistic_regression(
     :param label_transform: label_transform asset
     :return: sentence_transformer_logistic_regression asset
     """
-    model = SentenceTransformerLogisticRegression(cfg.FEATURE_FIELDS, cfg.SENTENCE_TRANSFORMER_MODEL)
+    model = FrozenLmWithLR(cfg.FEATURE_FIELDS, cfg.LANGUAGE_MODEL)
     model, metadata = train_and_test_model_from_embeddings(
         model,
         train_set,
@@ -181,14 +182,14 @@ def sentence_transformer_logistic_regression(
 
 
 @asset
-def sentence_transformer_nn(
+def frozen_lm_with_nn(
     context: OpExecutionContext,
     train_embeddings: np.ndarray,
     validation_embeddings: np.ndarray,
     train_set: Samples,
     validation_set: Samples,
     label_transform: LabelTransform
-) -> Output[SentenceTransformerNN]:
+) -> Output[FrozenLmWithNN]:
     """
     Creates a model that uses sentence transformer embeddings and a neural network classifier.
     
@@ -198,9 +199,9 @@ def sentence_transformer_nn(
     :param train_set: train_set asset
     :param validation_set: validation_set asset (also used in the training loop)
     :param label_transform: label_transform asset
-    :return: sentence_transformer_nn asset
+    :return: frozen_language_model_with_nn asset
     """
-    model = SentenceTransformerNN(version=context.run_id)
+    model = FrozenLmWithNN(version=context.run_id)
     _, y_train = extract_label(train_set, label_transform)
     _, y_valid = extract_label(validation_set, label_transform)
     model.fit_from_embeddings(train_embeddings, y_train, validation_embeddings, y_valid)  # type: ignore
@@ -212,8 +213,31 @@ def sentence_transformer_nn(
 
 
 @asset
+def finetuned_lm(
+    context: OpExecutionContext,
+    train_set: Samples,
+    validation_set: Samples,
+    label_transform: LabelTransform
+) -> Output:
+    model = FinetunedLM(
+        version=context.run_id,
+        fields=cfg.FEATURE_FIELDS,
+        labels=label_transform.labels,
+        language_model=cfg.LANGUAGE_MODEL,
+    )
+    X_train, y_train = extract_label(train_set, label_transform)
+    X_valid, y_valid = extract_label(validation_set, label_transform)
+    model.fit(X_train, y_train, X_valid, y_valid)
+    metadata_train = test_model(model, X_train, y_train, label_transform, suffix="_train")
+    metadata_valid = test_model(model, X_valid, y_valid, label_transform, suffix="_valid")
+    metadata = {**metadata_train, **metadata_valid}
+    output = Output(model, metadata=metadata)
+    return output
+
+
+@asset
 def model(
-    sentence_transformer_logistic_regression: Model,
+    finetuned_lm: Model,
     test_set: Samples,
     label_transform: LabelTransform
 ) -> Output:
@@ -226,7 +250,7 @@ def model(
     :param label_transform: label_transform asset
     :return: test_metrics asset
     """
-    model = sentence_transformer_logistic_regression
+    model = finetuned_lm
     X_test, y_test = extract_label(test_set, label_transform)
     metadata = test_model(
         model,

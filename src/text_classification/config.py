@@ -10,7 +10,7 @@ FEATURE_FIELDS = [
     "short_description"
 ]
 
-SENTENCE_TRANSFORMER_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+LANGUAGE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 CLASS_LABELS = {
     "A": "A: Art",

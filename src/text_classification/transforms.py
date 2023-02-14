@@ -61,7 +61,7 @@ def concat_fields(sample: Sample, fields: List[str]) -> str:
     :param fields: list of fields to concatenate
     :return: a string containing the concatenated values
     """
-    return ' '.join([str(sample[k]) for k in fields])
+    return ': '.join([str(sample[k]) for k in fields])
 
 
 class LabelTransform():

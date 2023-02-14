@@ -9,7 +9,7 @@ from text_classification.models.base import Model
 from text_classification.transforms import concat_fields
 
 
-class TfidfLogisticRegression(Model):
+class TfidfWithLR(Model):
     """
     A baseline model that uses TF-IDF to 'embed' the samples and then uses
     a logistic regression 'head' to predict the labels.
@@ -27,7 +27,7 @@ class TfidfLogisticRegression(Model):
         )
         self.logistic_regression = LogisticRegression()
 
-    def fit(self, X: Samples, y: np.ndarray) -> 'TfidfLogisticRegression':
+    def fit(self, X: Samples, y: np.ndarray) -> 'TfidfWithLR':
         X_text = [concat_fields(sample, self._fields) for sample in X]
         X_tfidf = self.tfidf_vectorizer.fit_transform(X_text)
         self.logistic_regression.fit(X_tfidf, y)
